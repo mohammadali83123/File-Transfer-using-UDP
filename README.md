@@ -57,6 +57,6 @@ Usage
 Start the server on the host machine:
 
 $ python server.py
-Run the client on a different machine or as a separate process:
+Run the client on a different Terminal.
 
 $ python client.py <operation> <127.0.0.1:2000> <file_path>
