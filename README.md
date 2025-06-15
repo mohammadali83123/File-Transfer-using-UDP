@@ -1,62 +1,147 @@
-Building a Reliable UDP(with Congestion control and Flow Control)
+# Reliable UDP File Transfer with Congestion and Flow Control
 
+This project implements a reliable file transfer system using UDP, incorporating key features of TCP such as congestion control, flow control, and packet sequencing.
 
-The system consists of two main components:
+## 📦 Components
 
-Client: Initiates file transfers by sending commands to a server.
-Server: Listens for client connections and handles file transfer requests.
+### 1. Client
 
-Prerequisites
-Python 3.x installed.
-Basic understanding of networking and Python programming.
+The client initiates communication and handles commands to **send (`lsend`)** or **receive (`lget`)** files from the server.
 
-Components
-Client
-The client is responsible for initiating file transfers by sending commands (lsend or lget) to a specified server.
+#### Supported Operations:
 
-Operations:
-To send a file:
-$ python client.py lsend <server_ip:server_port> <file_path>
+- **Send a file to server:**
 
-To receive a file:
-$ python client.py lget <server_ip:server_port> <file_name>
+```bash
+python client.py lsend <server_ip:server_port> <file_path>
+```
 
-Server
-The server listens for incoming connections from clients and manages file transfer requests.
+- **Receive a file from server:**
 
-Usage
-Start the server:
-$ python server.py
-The server listens on a specified port (default: 20000) for incoming connections.
+```bash
+python client.py lget <server_ip:server_port> <file_name>
+```
 
-File Transfer Process
-TCP Handshake: Establishes a connection between the client and server.
-Command Exchange: Client sends a command (lsend or lget) to the server.
-File Transfer:
-For lsend: Client sends a large file to the server.
-For lget: Server sends a requested file to the client.
+### 2. Server
 
+The server listens on a specified port for client connections and processes file transfer commands.
 
-Configuration
-You can configure the following parameters:
+#### Start the server:
 
-DEST_IP: Destination IP address of the server.
-DEST_PORT: Destination port of the server.
-COMMAND: Command (lsend or lget).
-MY_LARGE_FILE: Path to the large file you want to transfer.
+```bash
+python server.py
+```
 
-Dependencies
-The project uses Python's built-in socket library for network communication.
+By default, the server listens on port **20000**.
 
-Implementation Details
-UDP Sender/Receiver: Implements reliable file transfer over UDP, inspired by TCP's behavior.
-Logging: Utilizes Python's logging module for detailed event logging.
-Congestion Control: Implements a basic form of congestion control to manage packet flow.
+---
 
-Usage
-Start the server on the host machine:
+## 🔁 File Transfer Process
 
-$ python server.py
-Run the client on a different Terminal.
+1. **Connection Initialization:**  
+   The client establishes a logical connection to the server (simulated TCP handshake).
 
-$ python client.py <operation> <127.0.0.1:2000> <file_path>
+2. **Command Exchange:**  
+   Client sends either `lsend` or `lget` command.
+
+3. **File Transfer:**  
+   - `lsend`: Client sends a file to the server.  
+   - `lget`: Server sends a file to the client.
+
+---
+
+## ⚙️ Configuration
+
+You can configure the following parameters inside the code:
+
+| Parameter        | Description                                      |
+|------------------|--------------------------------------------------|
+| `DEST_IP`        | IP address of the server                         |
+| `DEST_PORT`      | Port number of the server                        |
+| `COMMAND`        | Command to execute (`lsend` or `lget`)           |
+| `MY_LARGE_FILE`  | File path for the file to transfer (for `lsend`) |
+
+---
+
+## 📡 Network Protocol
+
+This system is built over UDP sockets and includes the following reliability features:
+
+### ✅ Reliability Features
+
+- **Packet Sequencing** to reassemble data in correct order.
+- **Acknowledgements (ACKs)** to confirm delivery.
+- **Timeouts & Retransmissions** for lost packets.
+- **Sliding Window Protocol** for flow control.
+- **Congestion Control**:
+  - Adjusts window size dynamically based on ACKs/timeouts.
+  - Implements a simple congestion avoidance mechanism.
+
+---
+
+## 📋 Dependencies
+
+- Python 3.x
+- Standard Python libraries:
+  - `socket`
+  - `threading`
+  - `logging`
+  - `os`, `sys`, etc.
+
+No external packages required.
+
+---
+
+## 📁 Directory Structure
+
+```plaintext
+.
+├── client.py        # Client-side script to send/receive files
+├── server.py        # Server-side script to listen and respond
+├── utils/           # (Optional) Contains helper modules (e.g., packet.py)
+├── README.md        # Project documentation
+```
+
+---
+
+## 🧪 Usage Example
+
+1. **Start the server (on Terminal 1):**
+
+```bash
+python server.py
+```
+
+2. **Send file from client (on Terminal 2):**
+
+```bash
+python client.py lsend 127.0.0.1:20000 myfile.txt
+```
+
+3. **Receive file from server:**
+
+```bash
+python client.py lget 127.0.0.1:20000 myfile.txt
+```
+
+---
+
+## 🛠 Future Improvements
+
+- Add encryption for secure transfers
+- Implement Selective Acknowledgements (SACK)
+- Add checksums for data integrity
+- Add a GUI for ease of use
+
+---
+
+## 📑 License
+
+This project is open source and available under the [MIT License](LICENSE).
+
+---
+
+## 🙋‍♂️ Author
+
+Developed by [Your Name]  
+Feel free to contribute, open issues, or submit pull requests!
